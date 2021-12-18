@@ -1,67 +1,81 @@
-.table-wrapper {
-    margin-bottom: 25px;
-    border-radius: 6px;
-    background: #fff;
-    overflow: hidden; /* Clips any scrollbars that appear */
-
-    display: grid;
-    grid-template-columns:
-    minmax(150px, 3fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr);
+th:first-child, td:first-child
+{
+    position:sticky;
+    left:0px;
+    background-color:grey;
 }
 
-table {
-    width: 100%;
-    overflow: auto; /* Allow scrolling within the table */
+th:last-child, td:last-child
+{
+    position:sticky;
+    right:0px;
+    background-color:grey;
 }
 
-table th {
-    position: relative;
-    font-size: 18px;
-}
+/*.table-wrapper {*/
+/*    margin-bottom: 25px;*/
+/*    border-radius: 6px;*/
+/*    background: #fff;*/
+/*    overflow: hidden; !* Clips any scrollbars that appear *!*/
 
-table th,
-table td {
-    text-align: left;
-    padding: 16px 20px;
-}
+/*    display: grid;*/
+/*    grid-template-columns:*/
+/*    minmax(150px, 3fr)*/
+/*    minmax(150px, 1fr)*/
+/*    minmax(150px, 1fr)*/
+/*    minmax(150px, 1fr)*/
+/*    minmax(150px, 1fr);*/
+/*}*/
 
-table th span,
-table td span {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: block;
-}
+/*table {*/
+/*    width: 100%;*/
+/*    overflow: auto; !* Allow scrolling within the table *!*/
+/*}*/
 
-table tr td {
-    border-top: 1px solid #ccc;
-}
+/*table th {*/
+/*    position: relative;*/
+/*    font-size: 18px;*/
+/*}*/
 
-table thead,
-table tbody,
-table tr {
-    display: contents;
-}
+/*table th,*/
+/*table td {*/
+/*    text-align: left;*/
+/*    padding: 16px 20px;*/
+/*}*/
 
-.resize-handle {
-    display: block;
-    position: absolute;
-    cursor: col-resize;
-    width: 7px;
-    right: 0;
-    top: 0;
-    z-index: 1;
-    border-right: 2px solid transparent;
-}
+/*table th span,*/
+/*table td span {*/
+/*    white-space: nowrap;*/
+/*    text-overflow: ellipsis;*/
+/*    overflow: hidden;*/
+/*    display: block;*/
+/*}*/
 
-.resize-handle:hover {
-    border-color: #ccc;
-}
+/*table tr td {*/
+/*    border-top: 1px solid #ccc;*/
+/*}*/
 
-.resize-handle.active {
-    border-color: #517ea5;
-}
+/*table thead,*/
+/*table tbody,*/
+/*table tr {*/
+/*    display: contents;*/
+/*}*/
+
+/*.resize-handle {*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    cursor: col-resize;*/
+/*    width: 7px;*/
+/*    right: 0;*/
+/*    top: 0;*/
+/*    z-index: 1;*/
+/*    border-right: 2px solid transparent;*/
+/*}*/
+
+/*.resize-handle:hover {*/
+/*    border-color: #ccc;*/
+/*}*/
+
+/*.resize-handle.active {*/
+/*    border-color: #517ea5;*/
+/*}*/

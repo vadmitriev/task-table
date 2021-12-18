@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import city from './../../constants/geoposition';
+import city from 'constants/geoposition';
 import axios from 'axios';
+import Modal from 'components/Modal/Modal';
 
 const ModalWeather = ({modalOpen = false, data}) => {
     const [weatherData, setWeatherData] = useState(null);
+    const [title, setTitle] = useState('title');
+    const [ModalBody, setModalBody] = useState(null);
+
+    const month = 5;
 
     const formHtml = (date) => {
         return `${process.env.REACT_APP_WEATHER_BASE_URL}/${city.name}/${date}?unitGroup=metric&key=${process.env.REACT_APP_WEATHER_API_KEY}&contentType=json`;
@@ -11,37 +16,36 @@ const ModalWeather = ({modalOpen = false, data}) => {
 
     useEffect(() => {
         if (data.selectedDay) {
-            const now = new Date();
-            let day;
-            if (now.getMonth() === 0) {
-                day = new Date(now.getFullYear(), 11, data.selectedDay);
-            } else {
-                day = new Date(now.getFullYear(), now.getMonth() - 1, data.selectedDay);
-            }
+            const day = new Date(2021, month, data.selectedDay);
 
-            const dateString = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
+            const dateString = `${day.getFullYear()}-${month}-${day.getDate()}`;
+
+            setTitle(dateString);
 
             const html = formHtml(dateString);
 
-            (async function fetchData() {
-                axios.get(html)
-                    .then((w) => setWeatherData(w.data));
-            })();
+            axios.get(html)
+                .then((w) => setWeatherData(w.data));
+
+            // (async function fetchData() {
+            //
+            // })();
         }
     }, [data]);
 
-    return (
-        modalOpen
-            ? (
+    useEffect(() => {
+        if (weatherData) {
+            setModalBody(
                 <div>
-                    {city.name} weather:
-                    {weatherData &&
-                        <div>
-                            {weatherData.resolvedAddress}
-                        </div>
-                    }
+                    {weatherData.title}
                 </div>
             )
+        }
+    }, [weatherData]);
+
+    return (
+        modalOpen
+            ? ModalBody && <Modal title={title} children={ModalBody} />
             : null
     );
 };
