@@ -1,36 +1,52 @@
-import React, { useRef, useState } from 'react';
-import './modal.css';
+import React, { useRef, useEffect } from 'react';
+import './modal.scss';
 
-const Modal = ({ title, children }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const Modal = ({ modalOpen, toggleOpen, title, children, footer }) => {
     const ref = useRef(null);
 
     const closeModal = (e) => {
         if (ref.current === e.target) {
-            setIsModalOpen(false);
+            toggleOpen(false);
         }
     };
 
+    useEffect(() => {
+        const close = (e) => {
+            if(e.keyCode === 27) {
+                toggleOpen(false);
+            }
+        };
+        window.addEventListener('keydown', close);
+        return () => window.removeEventListener('keydown', close);
+    },[]);
+
     return (
         <>
-            <button onClick={() => setIsModalOpen(true)}>{title}</button>
             <div
-                className={`modal-bg`}
+                className="modal-bg"
                 style={{
                     backgroundColor: "rgba(0,0,0,0.75)",
-                    display: `${isModalOpen ? "block" : "none"}`
+                    display: `${modalOpen ? "block" : "none"}`
                 }}
                 onClick={closeModal}
             >
-                <div className={"modal-body-container"} ref={ref}>
-                    <div className={"modal-content"}>
-                        <button
-                            className={"modal-close-btn"}
-                            onClick={() => setIsModalOpen(false)}
-                        >
-                            X
-                        </button>
-                        {children}
+                <div className="modal-body-container" ref={ref}>
+                    <div className="modal-content">
+                        <div className="modal-title">
+                            {title}
+                            <button
+                                className="modal-close-btn"
+                                onClick={() => toggleOpen(false)}
+                            >
+                                X
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {children}
+                        </div>
+                        <div className="modal-footer">
+                            {footer}
+                        </div>
                     </div>
                 </div>
             </div>

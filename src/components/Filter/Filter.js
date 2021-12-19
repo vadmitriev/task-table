@@ -1,11 +1,19 @@
 import React from 'react';
+import './filter.scss';
 
-const Filter = ({onChange}) => {
+const Filter = ({onChange, text = 'Filter by name' }) => {
     return (
-        <div>
+        <div className="filter-container">
+            <label htmlFor="input" className="filter-label">
+                {text}
+            </label>
             <input
                 type="text"
-                onChange={onChange}
+                id="filter"
+                className="filter-input"
+                onChange={(event) => {
+                    onChange(event.target.value)
+                }}
             />
         </div>
     );

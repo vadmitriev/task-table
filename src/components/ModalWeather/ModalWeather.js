@@ -3,33 +3,45 @@ import city from 'constants/geoposition';
 import axios from 'axios';
 import Modal from 'components/Modal/Modal';
 
-const ModalWeather = ({modalOpen = false, data}) => {
+const ModalWeather = ({data, toggleModal, modalOpen = false}) => {
     const [weatherData, setWeatherData] = useState(null);
     const [title, setTitle] = useState('title');
     const [ModalBody, setModalBody] = useState(null);
 
     const month = 5;
+    const year = 2021;
 
     const formHtml = (date) => {
-        return `${process.env.REACT_APP_WEATHER_BASE_URL}/${city.name}/${date}?unitGroup=metric&key=${process.env.REACT_APP_WEATHER_API_KEY}&contentType=json`;
+        // return `${process.env.REACT_APP_WEATHER_BASE_URL}/${city.name}/${date}?unitGroup=metric&key=${process.env.REACT_APP_WEATHER_API_KEY}&contentType=json`;
+        return `${process.env.REACT_APP_WEATHER_BASE_URL}?key=${process.env.REACT_APP_WEATHER_API_KEY}&q=${city.name}&format=json&date=${date}`
     }
 
     useEffect(() => {
-        if (data.selectedDay) {
-            const day = new Date(2021, month, data.selectedDay);
+        if (data && data.selectedDay) {
+            const day = new Date();
+            day.setDate(data.selectedDay);
+            day.setFullYear(year);
+            day.setMonth(data.selectedDay < 31 ? month : month + 1);
 
             const dateString = `${day.getFullYear()}-${month}-${day.getDate()}`;
 
-            setTitle(dateString);
+            const dayString = data.selectedDay < 10 ? `0${data.selectedDay}` : data.selectedDay;
+            const monthString = month < 10 ? `0${month}` : month;
+
+            setTitle((
+                <span>
+                    {`Погода в городе ${city.nameRus} на дату `}
+                    <strong>{`${dayString}.${monthString}.${year}`}</strong>
+                </span>
+            ));
 
             const html = formHtml(dateString);
+            setWeatherData({avgtempC: 15})
 
-            axios.get(html)
-                .then((w) => setWeatherData(w.data));
-
-            // (async function fetchData() {
-            //
-            // })();
+            // axios.get(html)
+            //     .then((w) => {
+            //         setWeatherData(w.data.data.weather[0]);
+            //     });
         }
     }, [data]);
 
@@ -37,17 +49,21 @@ const ModalWeather = ({modalOpen = false, data}) => {
         if (weatherData) {
             setModalBody(
                 <div>
-                    {weatherData.title}
+                    {weatherData.avgtempC}
                 </div>
             )
         }
-    }, [weatherData]);
+    }, [data, weatherData]);
 
     return (
-        modalOpen
-            ? ModalBody && <Modal title={title} children={ModalBody} />
-            : null
-    );
+        ModalBody && (
+            <Modal
+                modalOpen={modalOpen}
+                title={title}
+                children={ModalBody}
+                toggleOpen={toggleModal}
+            />
+    ));
 };
 
 export default ModalWeather;

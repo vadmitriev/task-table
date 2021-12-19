@@ -1,11 +1,10 @@
-import React, {useState, useEffect, Suspense} from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Table from 'components/Table/Table';
 import ModalWeather from 'components/ModalWeather/ModalWeather';
 
-import Pagination from '../Table/TableFooter/TableFooter';
-import {getAll} from 'api/fakeApi';
+import { getAll, getUserByName } from 'api/fakeApi';
 
-// import './App.css';
+import './App.css';
 import Filter from 'components/Filter/Filter';
 import Modal from 'components/Modal/Modal';
 
@@ -18,18 +17,29 @@ const App = () => {
     const [modal, setModal] = useState({
         open: true,
         data: {
-            selectedDay: 26,
+            selectedDay: null,
         },
     });
+    const [filter, setFilter] = useState(null);
 
+    const setResults = (userData, count) => {
+        setCount(userData.count);
+        setUsers(userData.results);
+
+        setPageCount(Math.ceil(userData.count / count));
+    }
+
+    useEffect(() => {
+        getUserByName(filter, itemsPerPage)
+            .then((userData) => {
+                setResults(userData, itemsPerPage);
+            })
+    }, [filter]);
 
     useEffect(() => {
         getAll(page, itemsPerPage)
             .then((userData) => {
-                setCount(userData.count);
-                setUsers(userData.results);
-
-                setPageCount(Math.ceil(userData.count / itemsPerPage));
+                setResults(userData, itemsPerPage);
             })
     }, [page, itemsPerPage]);
 
@@ -43,8 +53,8 @@ const App = () => {
         })
     };
 
-    const handleFilter = (event) => {
-        console.log(event.target.value);
+    const handleFilter = (text) => {
+        setFilter(text);
     };
 
     const changePage = (targetPage) => {
@@ -59,23 +69,27 @@ const App = () => {
         // <Suspense fallback={<div className="loading" />}>
             <div className="container">
                 <div className="wrapper">
-                    <div className="d-flex justify-content-between mt-5">
-                        {/*<Filter onChange={handleFilter} />*/}
+                    <Filter onChange={handleFilter} />
 
-                        <Table
-                            onHeaderClick={handleTableHeaderClick}
-                            data={users}
-                            page={page}
-                            itemsPerPage={itemsPerPage}
-                            count={count}
-                            pageCount={pageCount}
-                            changePage={changePage}
-                            changeItemsCount={changePageCount}
-                        />
+                    <Table
+                        onHeaderClick={handleTableHeaderClick}
+                        data={users}
+                        page={page}
+                        itemsPerPage={itemsPerPage}
+                        count={count}
+                        pageCount={pageCount}
+                        changePage={changePage}
+                        changeItemsCount={changePageCount}
+                    />
 
-                        <ModalWeather modalOpen={modal.open} data={modal.data}/>
-                        {/*<Modal title={`Weather at ${modal.data.selectedDay}`} />*/}
-                    </div>
+                    <ModalWeather
+                        toggleModal={() => setModal({
+                            open: !modal.open,
+                            data: null,
+                        })}
+                        modalOpen={modal.open}
+                        data={modal.data}
+                    />
                 </div>
             </div>
         // </Suspense>
