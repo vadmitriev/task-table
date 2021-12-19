@@ -40,10 +40,11 @@
     align-items: center;
 }
 
-.children {
+.modal-body {
     display: flex;
-    flex-direction: column;
-    align-items: start;
+    align-content: center;
+    justify-items: center;
+    margin: 5px;
 }
 
 .modal-title {

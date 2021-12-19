@@ -6,7 +6,6 @@ const itemsOnPageCount = [5, 10, 15, 20];
 const TableFooter = ({
     page,
     pageCount,
-    count,
     itemsPerPage,
     changePage,
     changeCountPerPage
@@ -32,7 +31,7 @@ const TableFooter = ({
             <div>
                 <div className="page-params">
                     <div className="current-page">
-                        Current page: {page + 1} of {pageCount}
+                        Current page: {page <= pageCount ? page + 1 : pageCount} of {pageCount}
                     </div>
 
                     <span className="items-per-page">items per page:</span>

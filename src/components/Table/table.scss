@@ -70,15 +70,15 @@ table tr:hover {
     background-color: #50DFFC;
 }
 
-//th:last-child {
-//    white-space: nowrap;
-//    text-align: center;
-//    align-content: center;
-//}
+th:last-child {
+    white-space: nowrap;
+    text-align: center;
+    align-content: center;
+}
 
 .tbody {
     //width: 1000px;
-    //overflow-x: scroll;
+    //overflow-x: hidden;
 }
 
 .table-wrapper {
@@ -88,6 +88,7 @@ table tr:hover {
     margin: 25px;
     border-radius: 6px;
     background: #fff;
+    overflow-x: hidden;
 }
 
 .table-footer {

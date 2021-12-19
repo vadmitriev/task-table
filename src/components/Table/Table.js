@@ -1,62 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react';
 import TableFooter from 'components/Table/TableFooter/TableFooter';
 import ScrollContainer from 'react-indiana-drag-scroll';
-import './table.scss';
-import {selectTextInElement} from 'utils/utils';
+import { selectTextInElement } from 'utils/utils';
+import useSortableData from 'hooks/useSortableData';
 
-const createHeaders = (headers) => {
-    return headers.map((item) => ({
-        text: item,
-        ref: useRef(),
-    }));
-}
+import './table.scss';
 
 const Table = ({
    data,
    onHeaderClick,
    page,
    itemsPerPage,
-   count,
    pageCount,
    changePage,
    changeItemsCount,
 }) => {
-    const [processedData, setProcessedData] = useState([]);
-
-
     const dayNumbers = Array.from({length: 31}, (x, i) => i + 1);
-
-    // const columns = createHeaders(dayNumbers);
-
-    const minCellWidth = 10;
-
-    // const onMouseDown = (event) => {
-    //   setScroll({
-    //       ...scroll,
-    //       isScrolling: true,
-    //       clientX: event.clientX,
-    //   });
-    // };
-    //
-    // const onMouseUp = () => {
-    //   setScroll({
-    //       ...scroll,
-    //       isScrolling: false,
-    //   });
-    // };
-    //
-    // const onMouseMove = (event) => {
-    //     const { clientX, scrollX } = scroll;
-    //     if (scroll.isScrolling) {
-    //         scrollRef.current.scrollLeft = scrollX + event.clientX - clientX;
-    //         setScroll({
-    //             ...scroll,
-    //             scrollX: scrollX + event.clientX - clientX,
-    //             clientX: event.clientX,
-    //         });
-    //     }
-    // };
-
 
     const calcHours = ({Start, End}) => {
         const start = new Date().setHours(Start.split('-')[0], Start.split('-')[1]);
@@ -84,89 +43,37 @@ const Table = ({
             return calcHours(days[idx]);
         });
     };
+    const transformUserData = (userData) => {
+        return userData.map((user) => {
+            const days = calcDays(user.Days);
+            const totalHours = calcTotalHours(days);
 
-    // const mouseDown = (index) => {
-    //     setActiveIndex(index);
-    // }
-    //
-    // const mouseMove = useCallback((e) => {
-    //     const gridColumns = columns.map((col, i) => {
-    //         if (i === activeIndex) {
-    //             // Calculate the column width
-    //             const width = e.clientX - col.ref.current.offsetLeft;
-    //
-    //             if (width >= minCellWidth) {
-    //                 return `${width}px`;
-    //             }
-    //         }
-    //
-    //         // Otherwise return the previous width (no changes)
-    //         return `${col.ref.current.offsetWidth}px`;
-    //     });
-    //
-    //     // Assign the px values to the table
-    //     tableElement.current.style.gridTemplateColumns =
-    //         `${gridColumns.join(' ')}`;
-    // }, [activeIndex, columns, minCellWidth]);
-    //
-    // const removeListeners = useCallback(() => {
-    //     window.removeEventListener('mousemove', mouseMove);
-    //     window.removeEventListener('mouseup', removeListeners);
-    // }, [mouseMove]);
-    //
-    //
-    //
-    // const mouseUp = useCallback(() => {
-    //     setActiveIndex(null);
-    //     removeListeners();
-    // }, [setActiveIndex, removeListeners]);
-    //
-    //
-    // useEffect(() => {
-    //     setTableHeight(tableElement.current.offsetHeight);
-    // }, []);
-    //
-    // useEffect(() => {
-    //     if (activeIndex !== null) {
-    //         window.addEventListener('mousemove', mouseMove);
-    //         window.addEventListener('mouseup', mouseUp);
-    //     }
-    //
-    //     return () => {
-    //         removeListeners();
-    //     }
-    // }, [activeIndex, mouseMove, mouseUp, removeListeners]);
+            return {
+                id: user.id,
+                name: user.Fullname,
+                days,
+                totalHours,
+                ...days.map((val) => val),
+            }
+        });
+    };
 
+    const { items, requestSort, sortConfig } = useSortableData(transformUserData(data));
 
-    useEffect(() => {
-        if (data) {
-            const changedData = data.map((user) => {
-                const days = calcDays(user.Days);
-                const totalHours = calcTotalHours(days);
+    const getClassNamesFor = (name) => {
+        const checkDirection = (direction) => {
+            return direction === 'asc'
+                ? 'fa fa-fw fa-sort-asc'
+                : 'fa fa-fw fa-sort-desc';
+        };
 
-                return {
-                    id: user.id,
-                    name: user.Fullname,
-                    days,
-                    totalHours,
-                }
-            });
-
-            setProcessedData(changedData)
+        if (!sortConfig) {
+            return 'fa fa-fw fa-sort';
         }
-    }, [data]);
-
-    // const getClassNamesFor = (name) => {
-    //     if (!sortConfig) {
-    //         return;
-    //     }
-    //     return sortConfig.key === name ? sortConfig.direction : undefined;
-    // };
-
-    const [isScrolling, setIsScrolling] = useState(false);
-
-
-
+        return sortConfig.key === name
+            ? checkDirection(sortConfig.direction)
+            : 'fa fa-fw fa-sort';
+    };
 
     return (
         <div className="table-container">
@@ -177,20 +84,17 @@ const Table = ({
                         selectTextInElement(event.target);
                         event.stopPropagation()
                     }}
+                    hideScrollbars={true}
                 >
-                    <table
-                        // ref={tableElement}
-                    >
+                    <table>
                         <thead>
                         <tr>
                             <th
-                                onClick={() => {
-
-                                }}
+                                onClick={() => requestSort('name')}
                             >
                                 <span>User</span>
                                 <span>
-                                    <i className="fa fa-fw fa-sort"/>
+                                    <i className={getClassNamesFor('name')}/>
                                 </span>
                             </th>
                             {dayNumbers.map((day) => (
@@ -203,58 +107,39 @@ const Table = ({
                                           }}
                                     >
                                         {day}
-                                        {/*<button*/}
-                                        {/*    key={day}*/}
-                                        {/*    id={day}*/}
-                                        {/*    onClick={(event) => {*/}
-                                        {/*        requestSort(event.target.id);*/}
-                                        {/*        event.stopPropagation();*/}
-                                        {/*    }}*/}
-                                        {/*>*/}
-                                        {/*    up*/}
-                                        {/*</button>*/}
                                     </span>
-                                    <span>
-                                        <i className="fa fa-fw fa-sort"/>
+                                    <span
+                                        onClick={() => requestSort(day-1)}
+                                    >
+                                        <i className={getClassNamesFor(day-1)}/>
                                     </span>
                                 </th>
                             ))}
-                            {/*{columns.map(({ ref, text }, i) => (*/}
-                            {/*    <th ref={ref} key={text} onClick={onHeaderClick}>*/}
-                            {/*        <span id={text}>{text}</span>*/}
-                            {/*        <div*/}
-                            {/*            style={{ height: tableHeight }}*/}
-                            {/*            onMouseDown={() => mouseDown(i)}*/}
-                            {/*            className={`resize-handle ${activeIndex === i ? 'active' : 'idle'}`}*/}
-                            {/*        />*/}
-                            {/*    </th>*/}
-                            {/*))}*/}
-                            <th>
+                            <th
+                                onClick={() => requestSort('totalHours')}
+                            >
                                 <span>
                                     Monthly total
                                 </span>
                                 <span>
-                                    <i className="fa fa-fw fa-sort"/>
+                                    <i className={getClassNamesFor('totalHours')}/>
                                 </span>
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        {processedData && processedData.map((user) => {
+                        {items && items.map((user) => {
                             return (
-                                <tr key={user.id} >
-                                    <td onClick={(event) => event.stopPropagation()}>{user.name}</td>
+                                <tr key={user.id}>
+                                    <td>{user.name}</td>
                                     {user.days.map((hour, idx) => {
                                         return (
-                                            <td
-                                                key={`${user.id}-${idx}-${hour}`}
-                                                onClick={(event) => event.stopPropagation()}
-                                            >
+                                            <td key={`${user.id}-${idx}-${hour}`}>
                                                 {hour}
                                             </td>
                                         )
                                     })}
-                                    <td onClick={(event) => event.stopPropagation()}>{user.totalHours}</td>
+                                    <td>{user.totalHours}</td>
                                 </tr>
                             )
                         })}
@@ -266,7 +151,6 @@ const Table = ({
                 <TableFooter
                     page={page}
                     itemsPerPage={itemsPerPage}
-                    count={count}
                     pageCount={pageCount}
                     changePage={(targetPage) => changePage(targetPage)}
                     changeCountPerPage={(c) => changeItemsCount(c)}

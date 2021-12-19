@@ -14,21 +14,23 @@ export const getAll = (page, amount) => {
   }));
 };
 
-export const getUserByName = (name, amount) => {
+export const getUserByName = (name, page, amount) => {
+    const start = Number(page) * Number(amount);
+    const end = start + Number(amount);
+
+    const results = name
+        ? users.filter((user) => {
+            return user.Fullname
+                .toLowerCase()
+                .includes(name.toLowerCase())
+        })
+        : users;
 
     return new Promise((resolve => {
         setTimeout(() => {
-            const results = name
-                ? users.filter((user) => {
-                    return user.Fullname
-                        .toLowerCase()
-                        .includes(name.toLowerCase())
-                })
-                : users;
-
             resolve({
-                count: results.length <= amount ? results.length: amount,
-                results: results.slice(0, amount),
+                count: results.length,
+                results: results.slice(start, end),
             });
         }, 500);
     }));

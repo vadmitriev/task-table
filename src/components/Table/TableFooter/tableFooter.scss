@@ -10,20 +10,20 @@
 }
 
 .btn-footer {
-  //width: 40px;
-  //height: 30px;
-  //background-color: #f2faff;
-  //border-radius: 20%;
   background-color: #f1f1f1;
   border: 1px #282c34 solid;
-  padding: 7px 14px;
   border-radius: 40%;
   cursor: pointer;
   margin: 4px;
+  padding: 4px;
   max-height: 50px;
+  width: 35px;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
 
   &:hover:enabled {
-    box-shadow: 0px 0px 15px -4px #50DFFC;
+    box-shadow: 0 0 15px -4px #50DFFC;
   };
 }
 
