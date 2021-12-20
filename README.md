@@ -9,7 +9,7 @@
 
 
 ## Демо
-Посмотреть можно по ссылке: <a href="https://task-table-1.web.app/">task-table-1.web.app</a>
+Посмотреть можно по ссылке: <a href="https://task-table-1.web.app/" target="_blank">task-table-1.web.app</a>
 
 ## Установка
 
