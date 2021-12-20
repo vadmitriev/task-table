@@ -37,7 +37,6 @@ const TableFooter = ({
                     <span className="items-per-page">items per page:</span>
                     <select
                         name="change-items-count"
-                        // id="select-change-items-count"
                         onChange={(event) => {
                             changeCountPerPage(event.target.value)
                         }}
@@ -49,9 +48,7 @@ const TableFooter = ({
                             </option>
                         ))}
                     </select>
-
                 </div>
-
             </div>
             <div className="btn-group">
                 <button

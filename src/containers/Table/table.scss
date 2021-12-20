@@ -6,8 +6,6 @@ table {
     border-spacing: 0;
     margin-bottom: 3px;
 
-    //position: relative;
-
     &, & td, & th {
         border: 1px solid $gray-color;
     }
@@ -23,19 +21,6 @@ th {
         margin: 4px;
     }
 }
-
-//table thead th {
-//    position: -webkit-sticky; /* for Safari */
-//    position: sticky;
-//    top: 0;
-//}
-//
-//table tbody th {
-//    position: -webkit-sticky; /* for Safari */
-//    position: sticky;
-//    left: 0;
-//}
-
 
 td {
     padding: 1em;
@@ -76,11 +61,6 @@ th:last-child {
     align-content: center;
 }
 
-.tbody {
-    //width: 1000px;
-    //overflow-x: hidden;
-}
-
 .table-wrapper {
     display: flex;
     justify-content: flex-start;
@@ -94,16 +74,3 @@ th:last-child {
 .table-footer {
     align-self: center;
 }
-
-//.table-fixed-header {
-//    //margin: 40px;
-//    width: 90vw;
-//    //overflow: hidden;
-//
-//    & thead th {
-//        position: sticky;
-//        position: -webkit-sticky;
-//        top: 0;
-//        z-index: 1;
-//    }
-//}

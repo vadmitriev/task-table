@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Table from 'components/Table/Table';
+import Table from 'containers/Table/Table';
 import ModalWeather from 'components/ModalWeather/ModalWeather';
-import Filter from 'components/Filter/Filter';
+import Filter from 'containers/Filter/Filter';
 
 import { getAll, getUserByName } from 'api/fakeApi';
+import { headers, transformUserData } from 'utils/transformUserData';
+
 import './App.css';
 
 const App = () => {
@@ -20,7 +22,8 @@ const App = () => {
     const [filter, setFilter] = useState(null);
 
     const setResults = (userData, count) => {
-        setUsers(userData.results);
+        const changedData = transformUserData(userData.results);
+        setUsers(changedData);
 
         setPageCount(Math.ceil(userData.count / count));
     }
@@ -29,16 +32,15 @@ const App = () => {
         getUserByName(filter, page, itemsPerPage)
             .then((userData) => {
                 setResults(userData, itemsPerPage);
-            })
+            });
     }, [page, itemsPerPage, filter]);
 
     useEffect(() => {
         getAll(page, itemsPerPage)
             .then((userData) => {
                 setResults(userData, itemsPerPage);
-            })
+            });
     }, []);
-
 
     const handleTableHeaderClick = (value) => {
         setModal({
@@ -46,7 +48,7 @@ const App = () => {
             data: {
                 selectedDay: value,
             },
-        })
+        });
     };
 
     const handleFilter = (text) => {
@@ -69,6 +71,7 @@ const App = () => {
                 <Table
                     onHeaderClick={handleTableHeaderClick}
                     data={users}
+                    headers={headers}
                     page={page}
                     itemsPerPage={itemsPerPage}
                     pageCount={pageCount}
