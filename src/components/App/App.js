@@ -43,6 +43,10 @@ const App = () => {
     }, []);
 
     const handleTableHeaderClick = (value) => {
+        if (!Number.parseInt(value)) {
+            return;
+        }
+
         setModal({
             open: true,
             data: {
