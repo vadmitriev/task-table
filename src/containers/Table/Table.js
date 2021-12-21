@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React from 'react';
 import TableFooter from 'containers/Table/TableFooter/TableFooter';
 import ScrollContainer from 'react-indiana-drag-scroll';
 import { selectTextInElement } from 'utils/utils';
@@ -14,7 +14,6 @@ const createHeaders = (
 ) => {
     return headers.map((item) => ({
         id: item.id,
-        ref: useRef(),
         content: (
             <>
                 <span
@@ -44,76 +43,24 @@ const Table = ({
     pageCount,
     changePage,
     changeItemsCount,
-    minCellWidth = 50,
 }) => {
-    const [activeIndex, setActiveIndex] = useState(null);
-    const tableElement = useRef(null);
-
     const { items, requestSort, sortConfig } = useSortableData(data);
 
     const getClassNamesFor = (name) => {
         const prefix = 'fa fa-fw fa-sort';
 
         const checkDirection = (direction) => {
-            return direction === 'asc'
-                ? `${prefix}-asc`
-                : `${prefix}-desc`;
+            return `${prefix}-${direction}`;
         };
 
-        if (!sortConfig) {
+        if (!sortConfig || sortConfig.key !== name) {
             return prefix;
         }
-        return sortConfig.key === name
-            ? checkDirection(sortConfig.direction)
-            : prefix;
+
+        return checkDirection(sortConfig.direction);
     };
 
     const columns = createHeaders(headers, requestSort, onHeaderClick, getClassNamesFor);
-
-    const mouseDown = (index) => {
-        setActiveIndex(index);
-    };
-
-    const mouseMove = useCallback(
-        (e) => {
-            const gridColumns = columns.map((col, i) => {
-                if (i === activeIndex) {
-                    const width = e.clientX - col.ref.current.offsetLeft;
-
-                    if (width >= minCellWidth) {
-                        return `${width}px`;
-                    }
-                }
-                return `${col.ref.current.offsetWidth}px`;
-            });
-
-            tableElement.current.style.gridTemplateColumns = `${gridColumns.join(
-                " "
-            )}`;
-        },
-        [activeIndex, columns, minCellWidth]
-    );
-
-    const removeListeners = useCallback(() => {
-        window.removeEventListener("mousemove", mouseMove);
-        window.removeEventListener("mouseup", removeListeners);
-    }, [mouseMove]);
-
-    const mouseUp = useCallback(() => {
-        setActiveIndex(null);
-        removeListeners();
-    }, [setActiveIndex, removeListeners]);
-
-    useEffect(() => {
-        if (activeIndex !== null) {
-            window.addEventListener("mousemove", mouseMove);
-            window.addEventListener("mouseup", mouseUp);
-        }
-
-        return () => {
-            removeListeners();
-        };
-    }, [activeIndex, mouseMove, mouseUp, removeListeners]);
 
     return (
         <div className="table-container">
@@ -124,19 +71,12 @@ const Table = ({
                         selectTextInElement(event.target);
                     }}
                 >
-                    <table className="resizeable-table" ref={tableElement}>
+                    <table>
                         <thead>
                             <tr>
-                                {columns.map(({ id, ref, content }, i) => (
-                                    <th ref={ref} key={id}>
+                                {columns.map(({ id, content }) => (
+                                    <th key={id}>
                                         <div>{content}</div>
-                                        <div
-                                            // style={{ height: tableHeight }}
-                                            onMouseDown={() => mouseDown(i)}
-                                            className={`resize-handle ${
-                                                activeIndex === i ? "active" : "idle"
-                                            }`}
-                                        />
                                     </th>
                                 ))}
                             </tr>
@@ -151,11 +91,11 @@ const Table = ({
                                                 <td key={`${user.id}-${idx}-${hour}`}>
                                                     {hour}
                                                 </td>
-                                            )
+                                            );
                                         })}
                                         <td>{user.totalHours}</td>
                                     </tr>
-                                )
+                                );
                             })}
                         </tbody>
                     </table>

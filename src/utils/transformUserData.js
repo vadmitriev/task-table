@@ -10,7 +10,7 @@ export const headers = [
         text: day,
     })),
     {
-        id: 'total Hours',
+        id: 'totalHours',
         text: 'Monthly Total',
     },
 ];
@@ -19,7 +19,7 @@ const calcHours = ({Start, End}) => {
     const start = new Date().setHours(Start.split('-')[0], Start.split('-')[1]);
     const end = new Date().setHours(End.split('-')[0], End.split('-')[1]);
 
-    return Math.ceil((end - start) / 1000 / 60 / 24 * 10) / 10;
+    return Math.ceil((end - start) / 1000 / 60 / 60 * 10) / 10;
 };
 
 const calcTotalHours = (days) => {

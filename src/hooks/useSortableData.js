@@ -6,7 +6,6 @@ const useSortableData = (items, config = null) => {
     const sortedItems = useMemo(() => {
         let sortableItems = [...items];
         if (sortConfig !== null) {
-            // sortableItems = _.sortBy(sortableItems, sortConfig.key, sortConfig.direction);
             sortableItems.sort((a, b) => {
                 if (a[sortConfig.key] < b[sortConfig.key]) {
                     return sortConfig.direction === 'asc' ? -1 : 1;
